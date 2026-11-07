@@ -1,0 +1,16 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/productos/999"
+  },
+  "response": {
+    "status": 404,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "codigo": 404,
+      "mensaje": "El producto con el ID especificado no existe en el almacén."
+    }
+  }
+}
