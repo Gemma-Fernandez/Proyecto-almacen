@@ -9,11 +9,31 @@ info:
 #RUTAS (url para llamar app movil)
 paths:
 
-#-------------------------------------------------------
-#-----------RECEPCION---------------
+  #-------------------------------------------------------
+  #-----------RECEPCION---------------
   /recepciones:
     get:
       summary: Lista todas las recepciones de documentos
+      parameters:
+        - name: numeroAlbaran
+          in: query
+          description: Filtrar por número de albarán exacto
+          required: false
+          schema:
+            type: string
+        - name: documentacionValidada
+          in: query
+          description: Filtrar recepciones con documentación correcta (true/false)
+          required: false
+          schema:
+            type: boolean
+        - name: fechaRecepcion
+          in: query
+          description: Filtrar por fecha de recepción
+          required: false
+          schema:
+            type: string
+            format: date
       responses:
         '200': #código 200 significa "OK"
           description: Lista recuperada con éxito
@@ -85,11 +105,30 @@ paths:
         '500':
           description: Error interno del servidor
 
-#-------------------------------------------------------
-#----------------PRODUCTOS---------------
+  #-------------------------------------------------------
+  #----------------PRODUCTOS---------------
   /productos:
     get:
       summary: Lista todos los productos deportivos del almacén
+      parameters:
+        - name: sku
+          in: query
+          description: Filtrar por SKU
+          required: false
+          schema:
+            type: string
+        - name: requiereUbicacionSeguridad
+          in: query
+          description: Filtrar productos de alto valor (true/false)
+          required: false
+          schema:
+            type: boolean
+        - name: stockDisponible
+          in: query
+          description: Filtrar por unidades en stock
+          required: false
+          schema:
+            type: integer
       responses:
         '200':
           description: Lista recuperada con éxito
@@ -117,57 +156,77 @@ paths:
         '500':
           description: Error interno del servidor
   /productos/{idProducto}:
-      parameters:
-        - name: idProducto
-          in: path
-          required: true
-          schema:
-            type: integer
-      get:
-        summary: Busca un producto por ID
-        responses:
-          '200':
-            description: OK
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/Producto'
-          '404':
-            description: No encontrado
-          '500':
-            description: Error interno del servidor
-      put:
-        summary: Modifica un producto
-        requestBody:
-          required: true
+    parameters:
+      - name: idProducto
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      summary: Busca un producto por ID
+      responses:
+        '200':
+          description: OK
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Producto'
-        responses:
-          '200':
-            description: Modificado
-          '400':
-            description: Datos invalidos
-          '404':
-            description: No encontrado
-          '500':
-            description: Error interno del servidor
-      delete:
-        summary: Elimina un producto
-        responses:
-          '204':
-            description: Eliminado
-          '404':
-            description: No encontrado
-          '500':
-            description: Error interno del servidor
+        '404':
+          description: No encontrado
+        '500':
+          description: Error interno del servidor
+    put:
+      summary: Modifica un producto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Producto'
+      responses:
+        '200':
+          description: Modificado
+        '400':
+          description: Datos invalidos
+        '404':
+          description: No encontrado
+        '500':
+          description: Error interno del servidor
+    delete:
+      summary: Elimina un producto
+      responses:
+        '204':
+          description: Eliminado
+        '404':
+          description: No encontrado
+        '500':
+          description: Error interno del servidor
 
-#-------------------------------------------------------
-#------------OPERARIOS--------------
+  #-------------------------------------------------------
+  #------------OPERARIOS--------------
   /operarios:
     get:
       summary: Lista todo el personal del almacén
+      parameters:
+        - name: dni
+          in: query
+          description: Filtrar por DNI
+          required: false
+          schema:
+            type: string
+        - name: aptoCarretilla
+          in: query
+          description: Filtrar operarios con carnet de maquinaria (true/false)
+          required: false
+          schema:
+            type: boolean
+        - name: fechaIncorporacion
+          in: query
+          description: Filtrar por fecha de alta
+          required: false
+          schema:
+            type: string
+            format: date
       responses:
         '200':
           description: Lista recuperada con éxito
@@ -191,9 +250,9 @@ paths:
         '201':
           description: Operario creado con éxito
         '400':
-            description: Datos invalidos
+          description: Datos invalidos
         '500':
-              description: Error interno
+          description: Error interno
   /operarios/{idOperario}:
     parameters:
       - name: idOperario
@@ -246,6 +305,25 @@ paths:
   /zonas:
     get:
       summary: Lista las áreas de la nave logística
+      parameters:
+        - name: codigoUbicacion
+          in: query
+          description: Filtrar por código de zona
+          required: false
+          schema:
+            type: string
+        - name: requiereEpis
+          in: query
+          description: Filtrar zonas que requieren EPIs (true/false)
+          required: false
+          schema:
+            type: boolean
+        - name: capacidadPallets
+          in: query
+          description: Filtrar por capacidad de la zona
+          required: false
+          schema:
+            type: integer
       responses:
         '200':
           description: Lista recuperada con éxito
@@ -271,7 +349,7 @@ paths:
         '400':
           description: Datos invalidos
         '500':
-            description: Error interno
+          description: Error interno
   /zonas/{idZona}:
     parameters:
       - name: idZona
@@ -319,11 +397,30 @@ paths:
         '500':
           description: Error interno
 
-#-------------------------------------------------------
-#-------------CATEGORIAS------------
+  #-------------------------------------------------------
+  #-------------CATEGORIAS------------
   /categorias:
     get:
       summary: Lista las familias de artículos
+      parameters:
+        - name: codigoClasificacion
+          in: query
+          description: Filtrar por código
+          required: false
+          schema:
+            type: string
+        - name: prioridadDescarga
+          in: query
+          description: Filtrar categorías prioritarias (true/false)
+          required: false
+          schema:
+            type: boolean
+        - name: nivelPeligrosidad
+          in: query
+          description: Filtrar por nivel de riesgo
+          required: false
+          schema:
+            type: integer
       responses:
         '200':
           description: Lista recuperada con éxito
@@ -349,7 +446,7 @@ paths:
         '400':
           description: Datos invalidos
         '500':
-            description: Error interno
+          description: Error interno
 
   /categorias/{idCategoria}:
     parameters:
