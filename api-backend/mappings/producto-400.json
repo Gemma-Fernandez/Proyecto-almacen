@@ -1,0 +1,22 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/productos",
+    "bodyPatterns": [
+      {
+        "equalToJson": "{}",
+        "ignoreExtraElements": true
+      }
+    ]
+  },
+  "response": {
+    "status": 400,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "codigo": 400,
+      "mensaje": "Datos inválidos: faltan campos obligatorios."
+    }
+  }
+}
