@@ -1,14 +1,18 @@
+
+#arhivo definicion api
 openapi: 3.0.0
 info:
   title: API Almacén Logístico Deportivo
   version: 1.0.0
   description: API para la gestión logística del almacén de material deportivo (DAM).
+
+#RUTAS (url para llamar app movil)
 paths:
   /recepciones:
     get:
       summary: Lista todas las recepciones de documentos
       responses:
-        '200':
+        '200': #código 200 significa "OK"
           description: Lista recuperada con éxito
           content:
             application/json:
@@ -16,8 +20,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/RecepcionDocumento'
-        '500':
-          description: Error interno del servidor
     post:
       summary: Registra una nueva recepción en el muelle
       requestBody:
@@ -27,12 +29,10 @@ paths:
             schema:
               $ref: '#/components/schemas/RecepcionDocumento'
       responses:
-        '201':
+        '201': #significa "creado"
           description: Recepción creada con éxito
-        '400':
-          description: Datos inválidos o formato de albarán incorrecto
-        '500':
-          description: Error interno del servidor
+        '400':#significa "faltan datos"
+          description: Datos inválidos
 
   /productos:
     get:
@@ -46,8 +46,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Producto'
-        '500':
-          description: Error interno del servidor
     post:
       summary: Registra un nuevo producto deportivo
       requestBody:
@@ -60,25 +58,95 @@ paths:
         '201':
           description: Producto creado con éxito
         '400':
-          description: Datos inválidos o formato de SKU incorrecto
-        '500':
-          description: Error interno del servidor
+          description: Datos inválidos
 
+  /operarios:
+    get:
+      summary: Lista todo el personal del almacén
+      responses:
+        '200':
+          description: Lista recuperada con éxito
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Operario'
+    post:
+      summary: Registra un nuevo operario logístico
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Operario'
+      responses:
+        '201':
+          description: Operario creado con éxito
+
+  /zonas:
+    get:
+      summary: Lista las áreas de la nave logística
+      responses:
+        '200':
+          description: Lista recuperada con éxito
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ZonaAlmacen'
+    post:
+      summary: Registra una nueva zona
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ZonaAlmacen'
+      responses:
+        '201':
+          description: Zona creada con éxito
+
+  /categorias:
+    get:
+      summary: Lista las familias de artículos
+      responses:
+        '200':
+          description: Lista recuperada con éxito
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Categoria'
+    post:
+      summary: Registra una nueva categoría
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Categoria'
+      responses:
+        '201':
+          description: Categoría creada con éxito
+
+#MODELOS DE DATOS
+#estructura de las 5 clases
 components:
   schemas:
     RecepcionDocumento:
       type: object
-      required:
+      required: #nunca se pueden dejar en blanco
         - numeroAlbaran
         - fechaRecepcion
       properties:
         idRecepcion:
           type: integer
-          description: ID autoincremental
         numeroAlbaran:
           type: string
-          pattern: '^ALB-\d{4}-\d{4}$'
-          description: Formato obligatorio ALB-YYYY-XXXX
+          pattern: '^ALB-\d{4}-\d{4}$' #obliga a que empiece por ALB
         fechaRecepcion:
           type: string
           format: date
@@ -98,25 +166,88 @@ components:
       properties:
         idProducto:
           type: integer
-          description: ID autoincremental
         sku:
           type: string
           pattern: '^[A-Z0-9]{10}$'
-          description: Código de barras SKU. Restricción obligatoria de exactamente 10 caracteres alfanuméricos en mayúscula (ej. GARMIN245X)
         nombreArticulo:
           type: string
-          description: Descripción del producto (ej. Reloj Garmin Forerunner 245)
         pesoUnitarioKg:
           type: number
           format: float
-          description: Peso en báscula del artículo
         stockDisponible:
           type: integer
-          description: Unidades físicas listas para enviar
         requiereUbicacionSeguridad:
           type: boolean
-          description: Verdadero si es material de valor (ej. electrónica deportiva)
         fechaAlta:
           type: string
           format: date
-          description: Fecha de registro del producto en el sistema
+
+    Operario:
+      type: object
+      required:
+        - dni
+        - nombreCompleto
+      properties:
+        idOperario:
+          type: integer
+        dni:
+          type: string
+          pattern: '^\d{8}[A-Z]$'
+        nombreCompleto:
+          type: string
+        salarioHora:
+          type: number
+          format: float
+        aptoCarretilla:
+          type: boolean
+        fechaIncorporacion:
+          type: string
+          format: date
+
+    ZonaAlmacen:
+      type: object
+      required:
+        - codigoUbicacion
+        - responsableArea
+      properties:
+        idZona:
+          type: integer
+        codigoUbicacion:
+          type: string
+          pattern: '^Z-\d{3}$'
+        responsableArea:
+          type: string
+        capacidadPallets:
+          type: integer
+        temperaturaMedia:
+          type: number
+          format: float
+        requiereEpis:
+          type: boolean
+        fechaUltimaRevision:
+          type: string
+          format: date
+
+    Categoria:
+      type: object
+      required:
+        - codigoClasificacion
+        - nombreFamilia
+      properties:
+        idCategoria:
+          type: integer
+        codigoClasificacion:
+          type: string
+          pattern: '^[A-Z]{5}$'
+        nombreFamilia:
+          type: string
+        nivelPeligrosidad:
+          type: integer
+        margenRotura:
+          type: number
+          format: float
+        prioridadDescarga:
+          type: boolean
+        fechaCreacion:
+          type: string
+          format: date
