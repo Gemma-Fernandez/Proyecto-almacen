@@ -1,0 +1,122 @@
+openapi: 3.0.0
+info:
+  title: API Almacén Logístico Deportivo
+  version: 1.0.0
+  description: API para la gestión logística del almacén de material deportivo (DAM).
+paths:
+  /recepciones:
+    get:
+      summary: Lista todas las recepciones de documentos
+      responses:
+        '200':
+          description: Lista recuperada con éxito
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecepcionDocumento'
+        '500':
+          description: Error interno del servidor
+    post:
+      summary: Registra una nueva recepción en el muelle
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecepcionDocumento'
+      responses:
+        '201':
+          description: Recepción creada con éxito
+        '400':
+          description: Datos inválidos o formato de albarán incorrecto
+        '500':
+          description: Error interno del servidor
+
+  /productos:
+    get:
+      summary: Lista todos los productos deportivos del almacén
+      responses:
+        '200':
+          description: Lista recuperada con éxito
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Producto'
+        '500':
+          description: Error interno del servidor
+    post:
+      summary: Registra un nuevo producto deportivo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Producto'
+      responses:
+        '201':
+          description: Producto creado con éxito
+        '400':
+          description: Datos inválidos o formato de SKU incorrecto
+        '500':
+          description: Error interno del servidor
+
+components:
+  schemas:
+    RecepcionDocumento:
+      type: object
+      required:
+        - numeroAlbaran
+        - fechaRecepcion
+      properties:
+        idRecepcion:
+          type: integer
+          description: ID autoincremental
+        numeroAlbaran:
+          type: string
+          pattern: '^ALB-\d{4}-\d{4}$'
+          description: Formato obligatorio ALB-YYYY-XXXX
+        fechaRecepcion:
+          type: string
+          format: date
+        bultosDeclarados:
+          type: integer
+        desviacionPeso:
+          type: number
+          format: float
+        documentacionValidada:
+          type: boolean
+
+    Producto:
+      type: object
+      required:
+        - sku
+        - nombreArticulo
+      properties:
+        idProducto:
+          type: integer
+          description: ID autoincremental
+        sku:
+          type: string
+          pattern: '^[A-Z0-9]{10}$'
+          description: Código de barras SKU. Restricción obligatoria de exactamente 10 caracteres alfanuméricos en mayúscula (ej. GARMIN245X)
+        nombreArticulo:
+          type: string
+          description: Descripción del producto (ej. Reloj Garmin Forerunner 245)
+        pesoUnitarioKg:
+          type: number
+          format: float
+          description: Peso en báscula del artículo
+        stockDisponible:
+          type: integer
+          description: Unidades físicas listas para enviar
+        requiereUbicacionSeguridad:
+          type: boolean
+          description: Verdadero si es material de valor (ej. electrónica deportiva)
+        fechaAlta:
+          type: string
+          format: date
+          description: Fecha de registro del producto en el sistema
