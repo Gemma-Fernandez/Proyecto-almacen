@@ -4,10 +4,13 @@ openapi: 3.0.0
 info:
   title: API Almacén Logístico Deportivo
   version: 1.0.0
-  description: API para la gestión logística del almacén de material deportivo (DAM).
+  description: API para la gestión logística del almacén de material deportivo.
 
 #RUTAS (url para llamar app movil)
 paths:
+
+#-------------------------------------------------------
+#-----------RECEPCION---------------
   /recepciones:
     get:
       summary: Lista todas las recepciones de documentos
@@ -33,7 +36,57 @@ paths:
           description: Recepción creada con éxito
         '400':#significa "faltan datos"
           description: Datos inválidos
+        '500':
+          description: Error interno del servidor
+  /recepciones/{idRecepcion}:
+    parameters:
+      - name: idRecepcion
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      summary: Busca una recepción por ID
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecepcionDocumento'
+        '404':
+          description: No encontrado
+        '500':
+          description: Error interno del servidor
+    put:
+      summary: Modifica una recepción
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecepcionDocumento'
+      responses:
+        '200':
+          description: Modificado con éxito
+        '400':
+          description: Datos invalidos
+        '404':
+          description: No encontrado
+        '500':
+          description: Error interno del servidor
+    delete:
+      summary: Elimina una recepción
+      responses:
+        '204':
+          description: Eliminado con éxito
+        '404':
+          description: No encontrado
+        '500':
+          description: Error interno del servidor
 
+#-------------------------------------------------------
+#----------------PRODUCTOS---------------
   /productos:
     get:
       summary: Lista todos los productos deportivos del almacén
@@ -46,6 +99,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Producto'
+        '500':
+          description: Error interno del servidor
     post:
       summary: Registra un nuevo producto deportivo
       requestBody:
@@ -59,7 +114,57 @@ paths:
           description: Producto creado con éxito
         '400':
           description: Datos inválidos
+        '500':
+          description: Error interno del servidor
+  /productos/{idProducto}:
+      parameters:
+        - name: idProducto
+          in: path
+          required: true
+          schema:
+            type: integer
+      get:
+        summary: Busca un producto por ID
+        responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Producto'
+          '404':
+            description: No encontrado
+          '500':
+            description: Error interno del servidor
+      put:
+        summary: Modifica un producto
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Producto'
+        responses:
+          '200':
+            description: Modificado
+          '400':
+            description: Datos invalidos
+          '404':
+            description: No encontrado
+          '500':
+            description: Error interno del servidor
+      delete:
+        summary: Elimina un producto
+        responses:
+          '204':
+            description: Eliminado
+          '404':
+            description: No encontrado
+          '500':
+            description: Error interno del servidor
 
+#-------------------------------------------------------
+#------------OPERARIOS--------------
   /operarios:
     get:
       summary: Lista todo el personal del almacén
@@ -72,6 +177,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Operario'
+        '500':
+          description: Error interno
     post:
       summary: Registra un nuevo operario logístico
       requestBody:
@@ -83,7 +190,59 @@ paths:
       responses:
         '201':
           description: Operario creado con éxito
+        '400':
+            description: Datos invalidos
+        '500':
+              description: Error interno
+  /operarios/{idOperario}:
+    parameters:
+      - name: idOperario
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      summary: Busca un operario por ID
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Operario'
+        '404':
+          description: No encontrado
+        '500':
+          description: Error interno
+    put:
+      summary: Modifica un operario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Operario'
+      responses:
+        '200':
+          description: Modificado
+        '400':
+          description: Datos invalidos
+        '404':
+          description: No encontrado
+        '500':
+          description: Error interno
+    delete:
+      summary: Elimina un operario
+      responses:
+        '204':
+          description: Eliminado
+        '404':
+          description: No encontrado
+        '500':
+          description: Error interno
 
+  #-------------------------------------------------------
+  #---------------ZONAS---------------
   /zonas:
     get:
       summary: Lista las áreas de la nave logística
@@ -96,6 +255,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ZonaAlmacen'
+        '500':
+          description: Error interno
     post:
       summary: Registra una nueva zona
       requestBody:
@@ -107,7 +268,59 @@ paths:
       responses:
         '201':
           description: Zona creada con éxito
+        '400':
+          description: Datos invalidos
+        '500':
+            description: Error interno
+  /zonas/{idZona}:
+    parameters:
+      - name: idZona
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      summary: Busca una zona por ID
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ZonaAlmacen'
+        '404':
+          description: No encontrado
+        '500':
+          description: Error interno
+    put:
+      summary: Modifica una zona
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ZonaAlmacen'
+      responses:
+        '200':
+          description: Modificado
+        '400':
+          description: Datos invalidos
+        '404':
+          description: No encontrado
+        '500':
+          description: Error interno
+    delete:
+      summary: Elimina una zona
+      responses:
+        '204':
+          description: Eliminado
+        '404':
+          description: No encontrado
+        '500':
+          description: Error interno
 
+#-------------------------------------------------------
+#-------------CATEGORIAS------------
   /categorias:
     get:
       summary: Lista las familias de artículos
@@ -120,6 +333,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Categoria'
+        '500':
+          description: Error interno
     post:
       summary: Registra una nueva categoría
       requestBody:
@@ -131,6 +346,57 @@ paths:
       responses:
         '201':
           description: Categoría creada con éxito
+        '400':
+          description: Datos invalidos
+        '500':
+            description: Error interno
+
+  /categorias/{idCategoria}:
+    parameters:
+      - name: idCategoria
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      summary: Busca una categoría por ID
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Categoria'
+        '404':
+          description: No encontrado
+        '500':
+          description: Error interno
+    put:
+      summary: Modifica una categoría
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Categoria'
+      responses:
+        '200':
+          description: Modificado
+        '400':
+          description: Datos invalidos
+        '404':
+          description: No encontrado
+        '500':
+          description: Error interno
+    delete:
+      summary: Elimina una categoría
+      responses:
+        '204':
+          description: Eliminado
+        '404':
+          description: No encontrado
+        '500':
+          description: Error interno
 
 #MODELOS DE DATOS
 #estructura de las 5 clases
