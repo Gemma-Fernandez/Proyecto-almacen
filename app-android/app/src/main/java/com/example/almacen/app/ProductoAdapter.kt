@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class ProductoAdapter(private val productos: List<Producto>) :
+class ProductoAdapter(private val productos: List<Producto>, private val onItemClick: (Producto) -> Unit) :
     RecyclerView.Adapter<ProductoAdapter.ProductoViewHolder>() {
 
     class ProductoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
