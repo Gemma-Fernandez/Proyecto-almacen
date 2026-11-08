@@ -2,9 +2,9 @@ package com.example.almacen.app
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.parcelize.Parcelize
+import java.io.Serializable
 
-@Parcelize
+
 data class Producto(
     @SerializedName("idProducto")
     val id: Long,
@@ -26,4 +26,4 @@ data class Producto(
 
     @SerializedName("fechaAlta")
     val fechaAlta: String? = null
-) : Parcelable
+) : Serializable

@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import android.content.Intent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,7 +26,12 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         // 2. Asignar un adaptador vacío desde el inicio
-        adapter = ProductoAdapter(productosList)
+        adapter = ProductoAdapter(productosList) { productoSeleccionado ->
+            val intent = Intent(this@MainActivity, ProductoDetailActivity::class.java).apply {
+                putExtra("EXTRA_PRODUCTO", productoSeleccionado)
+            }
+            startActivity(intent)
+        }
         recyclerView.adapter = adapter
 
         // 3. Cargar los datos desde Retrofit
@@ -43,6 +49,14 @@ class MainActivity : AppCompatActivity() {
                     productosList.clear()
                     productosList.addAll(nuevosProductos)
                     adapter.notifyDataSetChanged()
+
+                    val adapter = ProductoAdapter(productosList) { productoSeleccionado ->
+                        val intent = Intent(this@MainActivity, ProductoDetailActivity::class.java).apply {
+                            putExtra("EXTRA_PRODUCTO", productoSeleccionado)
+                        }
+                        startActivity(intent)
+                    }
+                    recyclerView.adapter = adapter
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
