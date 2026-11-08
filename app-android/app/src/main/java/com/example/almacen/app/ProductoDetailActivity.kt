@@ -4,6 +4,7 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import java.io.Serializable
 
 class ProductoDetailActivity : AppCompatActivity() {
@@ -12,8 +13,16 @@ class ProductoDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_producto_details)
 
+        val toolbar = findViewById<Toolbar>(R.id.toolbarDetail)
+        setSupportActionBar(toolbar)
         // Botón atrás en la barra superior
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+
+        //accion de hacer clic
+        toolbar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
 
         val producto = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getSerializableExtra("EXTRA_PRODUCTO", Producto::class.java)
@@ -23,7 +32,7 @@ class ProductoDetailActivity : AppCompatActivity() {
         }
 
         producto?.let { p ->
-            title = p.nombre
+            supportActionBar?.title = "Detalle del producto"
 
             findViewById<TextView>(R.id.tvDetailNombre).text = p.nombre
             findViewById<TextView>(R.id.tvDetailSku).text = "SKU: ${p.sku ?: "N/A"}"
