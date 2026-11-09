@@ -10,6 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,8 +35,16 @@ class MainActivity : AppCompatActivity() {
         }
         recyclerView.adapter = adapter
 
-        // 3. Cargar los datos desde Retrofit
-        cargarProductos()
+        val fabAgregar = findViewById<FloatingActionButton>(R.id.fabAgregarProducto)
+        fabAgregar.setOnClickListener {
+            val intent = Intent(this, CrearProductoActivity::class.java)
+            startActivity(intent)
+        }
+
+    }
+    override fun onResume() {
+        super.onResume()
+        cargarProductos() // Vuelve a pedir los datos a WireMock
     }
 
     private fun cargarProductos() {
