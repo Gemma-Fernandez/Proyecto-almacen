@@ -1,5 +1,6 @@
 package com.example.almacen.app
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.CheckBox
@@ -33,7 +34,6 @@ class CrearProductoActivity : AppCompatActivity() {
             val nombre = etNombre.text.toString().trim()
             val stockText = etStock.text.toString().trim()
 
-            // Validación de los campos obligatorios
             if (nombre.isEmpty() || stockText.isEmpty()) {
                 Toast.makeText(this, "Por favor completa el nombre y el stock", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -44,8 +44,9 @@ class CrearProductoActivity : AppCompatActivity() {
             val peso = etPeso.text.toString().toDoubleOrNull()
             val requiereSeguridad = cbSeguridad.isChecked
 
+            // Asignamos Long para evitar el mismatch de tipos
             val nuevoProducto = Producto(
-                id = 0, // generará el ID automáticamente
+                id = System.currentTimeMillis(),
                 sku = sku,
                 nombre = nombre,
                 peso = peso,
@@ -61,15 +62,20 @@ class CrearProductoActivity : AppCompatActivity() {
         RetrofitClient.apiService.crearProducto(producto).enqueue(object : Callback<Producto> {
             override fun onResponse(call: Call<Producto>, response: Response<Producto>) {
                 if (response.isSuccessful) {
-                    Toast.makeText(this@CrearProductoActivity, "¡Producto guardado con éxito!", Toast.LENGTH_SHORT).show()
-                    finish() // Regresa a la lista principal
+                    Toast.makeText(applicationContext, "¡Producto guardado!", Toast.LENGTH_SHORT).show()
+
+                    val intentResultado = Intent().apply {
+                        putExtra("NUEVO_PRODUCTO", producto)
+                    }
+                    setResult(RESULT_OK, intentResultado)
+                    finish()
                 } else {
-                    Toast.makeText(this@CrearProductoActivity, "Error ${response.code()}: No se pudo guardar", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, "Error ${response.code()}: No se pudo guardar", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<Producto>, t: Throwable) {
-                Toast.makeText(this@CrearProductoActivity, "Error de red: ${t.localizedMessage}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, "Error de red: ${t.localizedMessage}", Toast.LENGTH_SHORT).show()
             }
         })
     }
