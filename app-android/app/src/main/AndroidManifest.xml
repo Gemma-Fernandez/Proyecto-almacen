@@ -26,6 +26,10 @@
             android:name=".ProductoDetailActivity"
             android:parentActivityName=".MainActivity"
             android:exported="false" />
+        <activity
+            android:name=".CrearProductoActivity"
+            android:parentActivityName=".MainActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
